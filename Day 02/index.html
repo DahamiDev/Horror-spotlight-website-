@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DARK CHRONICLES - Horror Comic</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Eater&family=Butcherman&family=Metal+Mania&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        cursor: none;
+      }
+
+      body {
+        font-family: "Metal Mania", cursive;
+        background: #000000;
+        color: #fff;
+        overflow-x: hidden;
+      }
+
+      /* Custom Cursor */
+      .custom-cursor {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #8b0000;
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 10000;
+        transition: transform 0.2s ease;
+        mix-blend-mode: difference;
+      }
+
+      .cursor-dot {
+        width: 6px;
+        height: 6px;
+        background: #ff0000;
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 10001;
+        box-shadow: 0 0 10px #ff0000;
+      }
+
+      /* Spotlight Effect */
+      .spotlight {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 9999;
+        background: radial-gradient(
+          circle 400px at var(--x, 50%) var(--y, 50%),
+          transparent 0%,
+          rgba(0, 0, 0, 0.95) 100%
+        );
+        mix-blend-mode: multiply;
+      }
+
+      /* Blood Drip Effect */
+      .blood-drip {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(180deg, #8b0000 0%, transparent 100%);
+        opacity: 0.3;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Navigation */
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 20px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.9) 0%,
+          transparent 100%
+        );
+        border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+      }
+
+      .logo {
+        font-family: "Nosifer", cursive;
+        font-size: 32px;
+        color: #8b0000;
+        text-shadow:
+          0 0 10px #ff0000,
+          0 0 20px #8b0000,
+          2px 2px 0 #000;
+        letter-spacing: 3px;
+        animation: flicker 3s infinite;
+      }
+
+      @keyframes flicker {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+        75% {
+          opacity: 0.9;
+        }
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 40px;
+        list-style: none;
+      }
+
+      .nav-links a {
+        color: #999;
+        text-decoration: none;
+        font-size: 16px;
+        letter-spacing: 2px;
+        transition: all 0.3s;
+        position: relative;
+        font-family: "Butcherman", cursive;
+      }
+
+      .nav-links a:hover {
+        color: #8b0000;
+        text-shadow: 0 0 10px #ff0000;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #8b0000;
+        transition: width 0.3s;
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      /* Hero Section */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .parallax-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 120%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23000000" width="1200" height="800"/><path fill="%23111111" d="M0 400 Q300 350 600 400 T1200 400 V800 H0 Z"/></svg>')
+          center/cover no-repeat;
+        transform: translateZ(0);
+        will-change: transform;
+      }
+
+      .hero-content {
+        text-align: center;
+        z-index: 10;
+        animation: fadeInUp 1.5s ease;
+      }
+
+      .hero-title {
+        font-family: "Nosifer", cursive;
+        font-size: 120px;
+        color: #8b0000;
+        text-shadow:
+          0 0 20px #ff0000,
+          0 0 40px #8b0000,
+          5px 5px 0 #000,
+          -2px -2px 0 #000;
+        margin-bottom: 20px;
+        letter-spacing: 5px;
+        animation: bloodPulse 2s infinite;
+      }
+
+      @keyframes bloodPulse {
+        0%,
+        100% {
+          text-shadow:
+            0 0 20px #ff0000,
+            0 0 40px #8b0000,
+            5px 5px 0 #000;
+        }
+        50% {
+          text-shadow:
+            0 0 30px #ff0000,
+            0 0 60px #8b0000,
+            5px 5px 0 #000;
+        }
+      }
+
+      .hero-subtitle {
+        font-family: "Eater", cursive;
+        font-size: 28px;
+        color: #666;
+        margin-bottom: 40px;
+        letter-spacing: 3px;
+      }
+
+      .cta-button {
+        padding: 15px 50px;
+        background: linear-gradient(135deg, #8b0000, #4b0000);
+        border: 2px solid #ff0000;
+        color: #fff;
+        font-size: 18px;
+        font-family: "Butcherman", cursive;
+        letter-spacing: 2px;
+        cursor: none;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s;
+        box-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
+      }
+
+      .cta-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 0, 0, 0.3),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .cta-button:hover::before {
+        left: 100%;
+      }
+
+      .cta-button:hover {
+        box-shadow: 0 0 40px rgba(255, 0, 0, 0.8);
+        transform: scale(1.05);
+      }
+
+      /* Comic Panels Section */
+      .comic-section {
+        min-height: 100vh;
+        padding: 100px 60px;
+        position: relative;
+      }
+
+      .section-title {
+        font-family: "Nosifer", cursive;
+        font-size: 60px;
+        text-align: center;
+        color: #8b0000;
+        margin-bottom: 80px;
+        text-shadow: 0 0 20px #ff0000;
+        animation: fadeInUp 1s ease;
+      }
+
+      .comic-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .comic-card {
+        background: #0a0a0a;
+        border: 3px solid #1a1a1a;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s ease;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+      }
+
+      .comic-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(139, 0, 0, 0.1),
+          transparent
+        );
+        transform: rotate(45deg);
+        transition: all 0.5s;
+      }
+
+      .comic-card:hover::before {
+        top: 100%;
+      }
+
+      .comic-card:hover {
+        border-color: #8b0000;
+        box-shadow: 0 10px 60px rgba(139, 0, 0, 0.5);
+        transform: translateY(-10px) scale(1.02);
+      }
+
+      .comic-image {
+        width: 100%;
+        height: 400px;
+        background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid #333;
+      }
+
+      .comic-image::after {
+        content: "💀";
+        font-size: 100px;
+        opacity: 0.2;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      .comic-title {
+        font-family: "Creepster", cursive;
+        font-size: 24px;
+        color: #8b0000;
+        margin-bottom: 10px;
+        letter-spacing: 2px;
+      }
+
+      .comic-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+        font-family: "Metal Mania", cursive;
+      }
+
+      /* Parallax Story Section */
+      .story-section {
+        min-height: 100vh;
+        padding: 100px 60px;
+        position: relative;
+        background: linear-gradient(180deg, #000 0%, #1a0000 100%);
+      }
+
+      .story-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .story-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        margin-bottom: 100px;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s ease;
+      }
+
+      .story-panel.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .story-panel:nth-child(even) {
+        direction: rtl;
+      }
+
+      .story-panel:nth-child(even) > * {
+        direction: ltr;
+      }
+
+      .story-image {
+        width: 100%;
+        height: 500px;
+        background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+        border: 3px solid #8b0000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(139, 0, 0, 0.3);
+      }
+
+      .story-image::after {
+        content: "🦇";
+        font-size: 120px;
+        opacity: 0.1;
+        animation: fly 5s ease-in-out infinite;
+      }
+
+      @keyframes fly {
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        25% {
+          transform: translate(50px, -30px) rotate(10deg);
+        }
+        50% {
+          transform: translate(0, -60px) rotate(-10deg);
+        }
+        75% {
+          transform: translate(-50px, -30px) rotate(5deg);
+        }
+      }
+
+      .story-text h3 {
+        font-family: "Creepster", cursive;
+        font-size: 42px;
+        color: #8b0000;
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px #ff0000;
+      }
+
+      .story-text p {
+        font-size: 18px;
+        line-height: 1.8;
+        color: #999;
+        font-family: "Metal Mania", cursive;
+      }
+
+      /* Footer */
+      footer {
+        padding: 60px;
+        background: #000;
+        border-top: 2px solid #8b0000;
+        text-align: center;
+      }
+
+      .footer-content {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .footer-text {
+        font-family: "Butcherman", cursive;
+        color: #666;
+        font-size: 14px;
+        letter-spacing: 2px;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 30px;
+      }
+
+      .social-links a {
+        color: #8b0000;
+        font-size: 24px;
+        transition: all 0.3s;
+      }
+
+      .social-links a:hover {
+        color: #ff0000;
+        text-shadow: 0 0 10px #ff0000;
+        transform: scale(1.2);
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #000;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #8b0000;
+        border-radius: 5px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #ff0000;
+      }
+
+      /* Responsive */
+      @media (max-width: 968px) {
+        .hero-title {
+          font-size: 60px;
+        }
+
+        .section-title {
+          font-size: 40px;
+        }
+
+        .story-panel {
+          grid-template-columns: 1fr;
+        }
+
+        nav {
+          padding: 20px 30px;
+        }
+
+        .nav-links {
+          gap: 20px;
+        }
+
+        .comic-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <!-- Spotlight Effect -->
+    <div class="spotlight"></div>
+
+    <!-- Blood Drip -->
+    <div class="blood-drip"></div>
+
+    <!-- Navigation -->
+    <nav>
+      <div class="logo">DARK CHRONICLES</div>
+      <ul class="nav-links">
+        <li><a href="#home">HOME</a></li>
+        <li><a href="#comics">COMICS</a></li>
+        <li><a href="#stories">STORIES</a></li>
+        <li><a href="#contact">CONTACT</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+      <div class="parallax-bg"></div>
+      <div class="hero-content">
+        <h1 class="hero-title">ENTER THE DARKNESS</h1>
+        <p class="hero-subtitle">Where Nightmares Come Alive</p>
+        <button class="cta-button">READ NOW</button>
+      </div>
+    </section>
+
+    <!-- Comic Panels Section -->
+    <section class="comic-section" id="comics">
+      <h2 class="section-title">FEATURED NIGHTMARES</h2>
+      <div class="comic-grid">
+        <div class="comic-card">
+          <div class="comic-image"></div>
+          <h3 class="comic-title">The Whisper</h3>
+          <p class="comic-description">
+            In the abandoned asylum, voices echo through empty halls. Some say
+            the dead never truly leave...
+          </p>
+        </div>
+        <div class="comic-card">
+          <div class="comic-image"></div>
+          <h3 class="comic-title">Crimson Moon</h3>
+          <p class="comic-description">
+            When the moon turns red, the creatures of the night awaken. A curse
+            as old as time itself...
+          </p>
+        </div>
+        <div class="comic-card">
+          <div class="comic-image"></div>
+          <h3 class="comic-title">Shadow Walker</h3>
+          <p class="comic-description">
+            It follows in the darkness. Always watching. Always waiting. Never
+            sleeping...
+          </p>
+        </div>
+        <div class="comic-card">
+          <div class="comic-image"></div>
+          <h3 class="comic-title">The Last Door</h3>
+          <p class="comic-description">
+            Behind the final door lies a truth so horrifying, that those who
+            enter never return...
+          </p>
+        </div>
+        <div class="comic-card">
+          <div class="comic-image"></div>
+          <h3 class="comic-title">Eternal Rest</h3>
+          <p class="comic-description">
+            The cemetery keeper knows secrets buried beneath the soil. Some
+            graves should never be opened...
+          </p>
+        </div>
+        <div class="comic-card">
+          <div class="comic-image"></div>
+          <h3 class="comic-title">Midnight Caller</h3>
+          <p class="comic-description">
+            The phone rings at midnight. But no one is on the other end. Or are
+            they?
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Parallax Story Section -->
+    <section class="story-section" id="stories">
+      <h2 class="section-title">TALES FROM THE CRYPT</h2>
+      <div class="story-container">
+        <div class="story-panel">
+          <div class="story-image"></div>
+          <div class="story-text">
+            <h3>Chapter I: Awakening</h3>
+            <p>
+              The old mansion stood silent on the hill, its windows like hollow
+              eyes staring into the void. For decades, no one dared to enter.
+              Until tonight...
+            </p>
+          </div>
+        </div>
+        <div class="story-panel">
+          <div class="story-image"></div>
+          <div class="story-text">
+            <h3>Chapter II: The Descent</h3>
+            <p>
+              Deep beneath the foundation, a staircase spirals into darkness.
+              Each step echoes with whispers of those who came before and never
+              returned...
+            </p>
+          </div>
+        </div>
+        <div class="story-panel">
+          <div class="story-image"></div>
+          <div class="story-text">
+            <h3>Chapter III: Revelation</h3>
+            <p>
+              In the chamber below, ancient symbols glow with an unholy light.
+              The ritual has begun, and there is no turning back...
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+      <div class="footer-content">
+        <p class="footer-text">
+          © 2024 DARK CHRONICLES | WHERE FEAR LIVES FOREVER
+        </p>
+        <div class="social-links">
+          <a href="#">💀</a>
+          <a href="#">🦇</a>
+          <a href="#">🕷️</a>
+          <a href="#">⚰️</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Custom Cursor
+      const cursor = document.querySelector(".custom-cursor");
+      const cursorDot = document.querySelector(".cursor-dot");
+
+      document.addEventListener("mousemove", (e) => {
+        cursor.style.left = e.clientX + "px";
+        cursor.style.top = e.clientY + "px";
+        cursorDot.style.left = e.clientX - 3 + "px";
+        cursorDot.style.top = e.clientY - 3 + "px";
+      });
+
+      // Spotlight Effect
+      const spotlight = document.querySelector(".spotlight");
+
+      document.addEventListener("mousemove", (e) => {
+        const x = (e.clientX / window.innerWidth) * 100;
+        const y = (e.clientY / window.innerHeight) * 100;
+        spotlight.style.setProperty("--x", x + "%");
+        spotlight.style.setProperty("--y", y + "%");
+      });
+
+      // Parallax Effect
+      window.addEventListener("scroll", () => {
+        const scrolled = window.pageYOffset;
+        const parallaxBg = document.querySelector(".parallax-bg");
+
+        if (parallaxBg) {
+          parallaxBg.style.transform = `translateY(${scrolled * 0.5}px)`;
+        }
+
+        // Story panels parallax
+        const storyPanels = document.querySelectorAll(".story-panel");
+        storyPanels.forEach((panel, index) => {
+          const rect = panel.getBoundingClientRect();
+          const offset = rect.top - window.innerHeight;
+
+          if (offset < 0) {
+            panel.classList.add("visible");
+          }
+
+          const image = panel.querySelector(".story-image");
+          if (image && rect.top < window.innerHeight) {
+            const speed = index % 2 === 0 ? 0.3 : -0.3;
+            image.style.transform = `translateY(${scrolled * speed * 0.1}px)`;
+          }
+        });
+      });
+
+      // Smooth Scroll
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+
+      // Comic Cards Entrance Animation
+      const observerOptions = {
+        threshold: 0.2,
+        rootMargin: "0px 0px -100px 0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.style.animation = "fadeInUp 0.8s ease forwards";
+            }, index * 100);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll(".comic-card").forEach((card) => {
+        card.style.opacity = "0";
+        observer.observe(card);
+      });
+
+      // Hover effects on buttons
+      document
+        .querySelectorAll(".cta-button, .comic-card")
+        .forEach((element) => {
+          element.addEventListener("mouseenter", () => {
+            cursor.style.transform = "scale(2)";
+          });
+
+          element.addEventListener("mouseleave", () => {
+            cursor.style.transform = "scale(1)";
+          });
+        });
+
+      // Random flicker effect for title
+      setInterval(() => {
+        const title = document.querySelector(".hero-title");
+        if (Math.random() > 0.95) {
+          title.style.opacity = "0.7";
+          setTimeout(() => {
+            title.style.opacity = "1";
+          }, 50);
+        }
+      }, 2000);
+    </script>
+  </body>
+</html>
